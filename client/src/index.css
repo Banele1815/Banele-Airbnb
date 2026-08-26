@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans text-airbnb-dark antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-airbnb-red text-white px-6 py-3 rounded-lg font-semibold hover:bg-rose-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply border border-airbnb-dark text-airbnb-dark px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200;
+  }
+  .input-field {
+    @apply w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-airbnb-red focus:border-transparent;
+  }
+}
+
+/* Date picker overrides */
+.react-datepicker-wrapper {
+  width: 100%;
+}

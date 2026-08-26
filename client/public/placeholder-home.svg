@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f3f4f6"/>
+  <rect x="250" y="200" width="300" height="220" rx="8" fill="#e5e7eb"/>
+  <polygon points="220,220 400,100 580,220" fill="#d1d5db"/>
+  <rect x="330" y="330" width="80" height="90" rx="4" fill="#9ca3af"/>
+  <rect x="270" y="250" width="60" height="50" rx="4" fill="#9ca3af"/>
+  <rect x="470" y="250" width="60" height="50" rx="4" fill="#9ca3af"/>
+  <text x="400" y="460" font-family="Arial,sans-serif" font-size="22" fill="#9ca3af" text-anchor="middle">No image available</text>
+</svg>
