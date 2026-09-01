@@ -125,7 +125,7 @@ export default function MyBookings() {
               {/* Photo */}
               <Link to={`/listings/${booking.listing?._id}`} className="flex-shrink-0">
                 <img
-                  src={booking.listing?.photos?.[0] || '/placeholder-home.jpg'}
+                  src={booking.listing?.photos?.[0] || '/placeholder-home.svg'}
                   alt={booking.listing?.title}
                   className="w-full sm:w-28 h-28 object-cover rounded-xl"
                 />

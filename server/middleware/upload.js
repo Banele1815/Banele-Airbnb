@@ -1,27 +1,11 @@
 import multer from 'multer'
 import path from 'path'
-import { fileURLToPath } from 'url'
-import fs from 'fs'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// Ensure uploads directory exists
-const uploadDir = path.join(__dirname, '../../uploads')
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true })
-}
-
-const storage = multer.diskStorage({
-  destination(_req, _file, cb) {
-    cb(null, uploadDir)
-  },
-  filename(_req, file, cb) {
-    const ext = path.extname(file.originalname).toLowerCase()
-    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`
-    cb(null, unique)
-  },
-})
+// In-memory storage — files never touch the local disk. The buffer is
+// handed to the upload controller, which saves it into MongoDB (see
+// models/Image.js). This is what makes uploads work on serverless hosts
+// like Vercel, whose filesystem is ephemeral/read-only outside /tmp.
+const storage = multer.memoryStorage()
 
 function fileFilter(_req, file, cb) {
   const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
@@ -36,7 +20,7 @@ function fileFilter(_req, file, cb) {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB per file
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2 MB per file — keeps MongoDB documents small
 })
 
 export default upload

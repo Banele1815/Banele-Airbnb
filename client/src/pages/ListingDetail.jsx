@@ -116,7 +116,7 @@ export default function ListingDetail() {
     )
   }
 
-  const photos = listing.photos?.length ? listing.photos : ['/placeholder-home.jpg']
+  const photos = listing.photos?.length ? listing.photos : ['/placeholder-home.svg']
   const amenities = listing.amenities || []
   const visibleAmenities = showAllAmenities ? amenities : amenities.slice(0, 6)
 
@@ -168,6 +168,7 @@ export default function ListingDetail() {
             src={photos[activePhoto] || photos[0]}
             alt={listing.title}
             className="w-full h-full object-cover"
+            onError={(e) => { e.target.onerror = null; e.target.src = '/placeholder-home.svg' }}
           />
         </div>
         {photos.slice(1, 5).map((photo, i) => (
@@ -177,6 +178,7 @@ export default function ListingDetail() {
               alt={`${listing.title} photo ${i + 2}`}
               className={`w-full h-full object-cover hover:brightness-90 transition-all cursor-pointer ${activePhoto === i + 1 ? 'brightness-75' : ''}`}
               onClick={() => setActivePhoto(i + 1)}
+              onError={(e) => { e.target.onerror = null; e.target.src = '/placeholder-home.svg' }}
             />
           </div>
         ))}

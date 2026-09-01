@@ -279,7 +279,7 @@ export default function UpdateListing() {
                         src={url}
                         alt={`Photo ${i + 1}`}
                         className="aspect-square object-cover rounded-xl border border-gray-200"
-                        onError={(e) => { e.target.src = '/placeholder-home.jpg' }}
+                        onError={(e) => { e.target.src = '/placeholder-home.svg' }}
                       />
                       <button
                         type="button"

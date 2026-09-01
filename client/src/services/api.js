@@ -1,7 +1,17 @@
 import axios from 'axios'
 
+/**
+ * Base URL resolution:
+ * - In production (Vercel): requests go to /api — same origin, no CORS needed
+ * - In development: Vite proxies /api → http://localhost:5000
+ * - VITE_API_URL can override (e.g. a separate Railway/Render backend)
+ */
+const baseURL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL,
   headers: { 'Content-Type': 'application/json' },
 })
 

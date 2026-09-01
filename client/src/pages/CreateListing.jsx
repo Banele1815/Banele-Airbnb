@@ -236,7 +236,7 @@ export default function CreateListing() {
                 {formData.photos.slice(0, 6).map((url, i) => (
                   <img key={i} src={url} alt={`Preview ${i + 1}`}
                     className="aspect-square object-cover rounded-xl border border-gray-200"
-                    onError={(e) => { e.target.src = '/placeholder-home.jpg' }} />
+                    onError={(e) => { e.target.src = '/placeholder-home.svg' }} />
                 ))}
               </div>
             )}

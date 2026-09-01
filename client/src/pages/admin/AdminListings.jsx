@@ -109,10 +109,10 @@ export default function AdminListings() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <img
-                          src={listing.photos?.[0] || '/placeholder-home.jpg'}
+                          src={listing.photos?.[0] || '/placeholder-home.svg'}
                           alt={listing.title}
                           className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
-                          onError={(e) => { e.target.src = '/placeholder-home.jpg' }}
+                          onError={(e) => { e.target.src = '/placeholder-home.svg' }}
                         />
                         <div className="min-w-0">
                           <p className="font-medium text-airbnb-dark truncate max-w-[180px]">{listing.title}</p>

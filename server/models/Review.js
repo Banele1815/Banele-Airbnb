@@ -1,11 +1,11 @@
 import mongoose from 'mongoose'
-import Listing from './Listing.js'
+import Accommodation from './Accommodation.js'
 
 const reviewSchema = new mongoose.Schema(
   {
     listing: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Listing',
+      ref: 'Accommodation',
       required: true,
     },
     guest: {
@@ -15,7 +15,7 @@ const reviewSchema = new mongoose.Schema(
     },
     booking: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Booking',
+      ref: 'Reservation',
       required: true,
     },
     rating: {
@@ -62,12 +62,12 @@ async function recalcListingRating(listingId) {
   ])
 
   if (stats.length > 0) {
-    await Listing.findByIdAndUpdate(listingId, {
+    await Accommodation.findByIdAndUpdate(listingId, {
       avgRating: Math.round(stats[0].avgRating * 10) / 10,
       reviewCount: stats[0].reviewCount,
     })
   } else {
-    await Listing.findByIdAndUpdate(listingId, { avgRating: 0, reviewCount: 0 })
+    await Accommodation.findByIdAndUpdate(listingId, { avgRating: 0, reviewCount: 0 })
   }
 }
 

@@ -1,14 +1,14 @@
 import User from '../models/User.js'
-import Listing from '../models/Listing.js'
-import Booking from '../models/Booking.js'
+import Accommodation from '../models/Accommodation.js'
+import Reservation from '../models/Reservation.js'
 
 // GET /api/admin/stats
 export async function getStats(req, res, next) {
   try {
     const [users, listings, bookings] = await Promise.all([
       User.countDocuments(),
-      Listing.countDocuments({ isActive: true }),
-      Booking.countDocuments(),
+      Accommodation.countDocuments({ isActive: true }),
+      Reservation.countDocuments(),
     ])
     res.json({ users, listings, bookings })
   } catch (err) {
@@ -59,7 +59,7 @@ export async function deleteUser(req, res, next) {
 // GET /api/admin/listings  — all listings regardless of isActive
 export async function getAllListings(req, res, next) {
   try {
-    const listings = await Listing.find()
+    const listings = await Accommodation.find()
       .populate('host', 'name email')
       .sort({ createdAt: -1 })
     res.json(listings)
@@ -71,9 +71,9 @@ export async function getAllListings(req, res, next) {
 // DELETE /api/admin/listings/:id
 export async function adminDeleteListing(req, res, next) {
   try {
-    const listing = await Listing.findByIdAndDelete(req.params.id)
-    if (!listing) return res.status(404).json({ message: 'Listing not found.' })
-    res.json({ message: 'Listing deleted.' })
+    const listing = await Accommodation.findByIdAndDelete(req.params.id)
+    if (!listing) return res.status(404).json({ message: 'Accommodation not found.' })
+    res.json({ message: 'Accommodation deleted.' })
   } catch (err) {
     next(err)
   }
@@ -82,7 +82,7 @@ export async function adminDeleteListing(req, res, next) {
 // GET /api/admin/bookings
 export async function getAllBookings(req, res, next) {
   try {
-    const bookings = await Booking.find()
+    const bookings = await Reservation.find()
       .populate('listing', 'title location')
       .populate('guest', 'name email')
       .sort({ createdAt: -1 })

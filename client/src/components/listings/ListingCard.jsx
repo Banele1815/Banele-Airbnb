@@ -15,11 +15,17 @@ export default function ListingCard({ listing }) {
     ? listing.photos[0]
     : '/placeholder-home.svg'
 
+  const amenities = listing.amenities || []
+
   return (
     <article className="group cursor-pointer">
-      <Link to={`/listings/${listing._id}`} className="block" aria-label={listing.title}>
-        {/* Photo */}
-        <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-100">
+      <Link
+        to={`/listings/${listing._id}`}
+        aria-label={listing.title}
+        className="flex gap-4 items-stretch bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-shadow"
+      >
+        {/* Photo — left */}
+        <div className="relative w-40 sm:w-48 flex-shrink-0 overflow-hidden bg-gray-100">
           <img
             src={photo}
             alt={listing.title}
@@ -45,33 +51,44 @@ export default function ListingCard({ listing }) {
               }`}
             />
           </button>
-
-          {/* Category badge */}
-          {listing.category && (
-            <span className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-xs font-medium text-airbnb-dark px-2 py-1 rounded-full">
-              {listing.category}
-            </span>
-          )}
         </div>
 
-        {/* Info */}
-        <div className="mt-3 space-y-1">
-          <div className="flex items-center justify-between">
-            <p className="font-semibold text-airbnb-dark text-sm truncate pr-2">{listing.title}</p>
+        {/* Details — right */}
+        <div className="flex-1 min-w-0 py-3 pr-4 flex flex-col justify-center gap-1.5">
+          {listing.category && (
+            <p className="text-xs font-medium text-airbnb-gray uppercase tracking-wide">
+              {listing.category}
+            </p>
+          )}
+
+          <div className="flex items-start justify-between gap-2">
+            <p className="font-semibold text-airbnb-dark text-sm truncate">{listing.title}</p>
             {listing.avgRating > 0 && (
               <div className="flex items-center gap-1 flex-shrink-0">
                 <FiStar size={12} className="fill-airbnb-dark text-airbnb-dark" />
                 <span className="text-xs text-airbnb-dark">{listing.avgRating.toFixed(1)}</span>
+                <span className="text-xs text-airbnb-gray">
+                  ({listing.reviewCount ?? 0})
+                </span>
               </div>
             )}
           </div>
+
           <p className="text-xs text-airbnb-gray truncate">{listing.location}</p>
+
           <p className="text-xs text-airbnb-gray">
             {listing.bedrooms} bedroom{listing.bedrooms !== 1 ? 's' : ''}
             {' · '}
             {listing.maxGuests} guest{listing.maxGuests !== 1 ? 's' : ''}
           </p>
-          <p className="text-sm text-airbnb-dark">
+
+          {amenities.length > 0 && (
+            <p className="text-xs text-airbnb-gray truncate">
+              {amenities.slice(0, 3).join(' · ')}
+            </p>
+          )}
+
+          <p className="text-sm text-airbnb-dark mt-1">
             <span className="font-semibold">R{listing.pricePerNight?.toLocaleString()}</span>
             <span className="text-airbnb-gray font-normal"> / night</span>
           </p>

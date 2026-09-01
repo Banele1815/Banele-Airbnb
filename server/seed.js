@@ -7,8 +7,8 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
 import connectDB from './config/db.js'
 import User from './models/User.js'
-import Listing from './models/Listing.js'
-import Booking from './models/Booking.js'
+import Accommodation from './models/Accommodation.js'
+import Reservation from './models/Reservation.js'
 import Review from './models/Review.js'
 
 const LISTINGS = [
@@ -309,8 +309,8 @@ async function seed() {
   // Clear existing data
   await Promise.all([
     Review.deleteMany(),
-    Booking.deleteMany(),
-    Listing.deleteMany(),
+    Reservation.deleteMany(),
+    Accommodation.deleteMany(),
     User.deleteMany(),
   ])
   console.log('🗑   Cleared existing data')
@@ -345,7 +345,7 @@ async function seed() {
   console.log('👤  Created 3 users (admin / host / guest — password: password123)')
 
   // Create listings
-  const listingDocs = await Listing.insertMany(
+  const listingDocs = await Accommodation.insertMany(
     LISTINGS.map((l) => ({ ...l, host: hostUser._id }))
   )
   console.log(`🏠  Created ${listingDocs.length} listings`)
@@ -356,7 +356,7 @@ async function seed() {
   const inThreeDays = new Date()
   inThreeDays.setDate(inThreeDays.getDate() + 4)
 
-  await Booking.insertMany([
+  await Reservation.insertMany([
     {
       listing: listingDocs[0]._id,
       guest: guestUser._id,
@@ -384,14 +384,14 @@ async function seed() {
     {
       listing: listingDocs[0]._id,
       guest: guestUser._id,
-      booking: (await Booking.findOne({ guest: guestUser._id, listing: listingDocs[0]._id }))._id,
+      booking: (await Reservation.findOne({ guest: guestUser._id, listing: listingDocs[0]._id }))._id,
       rating: 5,
       comment: 'Absolutely stunning villa! The views over Clifton Beach are unreal. The pool is incredible and the host was super responsive. Will definitely be back.',
     },
     {
       listing: listingDocs[2]._id,
       guest: guestUser._id,
-      booking: (await Booking.findOne({ guest: guestUser._id, listing: listingDocs[2]._id }))._id,
+      booking: (await Reservation.findOne({ guest: guestUser._id, listing: listingDocs[2]._id }))._id,
       rating: 4,
       comment: 'Great location in Sandton. The apartment is exactly as described — clean, modern and well-equipped. Slight traffic noise but nothing major.',
     },

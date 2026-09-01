@@ -1,5 +1,5 @@
 import Review from '../models/Review.js'
-import Booking from '../models/Booking.js'
+import Reservation from '../models/Reservation.js'
 
 // POST /api/reviews
 export async function createReview(req, res, next) {
@@ -11,8 +11,8 @@ export async function createReview(req, res, next) {
     }
 
     // Verify the booking belongs to this guest and is completed/confirmed
-    const booking = await Booking.findById(bookingId)
-    if (!booking) return res.status(404).json({ message: 'Booking not found.' })
+    const booking = await Reservation.findById(bookingId)
+    if (!booking) return res.status(404).json({ message: 'Reservation not found.' })
 
     if (booking.guest.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'You can only review your own bookings.' })
@@ -70,7 +70,7 @@ export async function deleteReview(req, res, next) {
     await review.deleteOne()
 
     // Un-mark the booking so the user could theoretically re-review
-    await Booking.findByIdAndUpdate(review.booking, { reviewed: false })
+    await Reservation.findByIdAndUpdate(review.booking, { reviewed: false })
 
     res.json({ message: 'Review deleted.' })
   } catch (err) {

@@ -1,19 +1,17 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import path from 'path'
-import { fileURLToPath } from 'url'
 import connectDB from './config/db.js'
-import authRoutes from './routes/authRoutes.js'
-import listingRoutes from './routes/listingRoutes.js'
-import bookingRoutes from './routes/bookingRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import accommodationRoutes from './routes/accommodationRoutes.js'
+import reservationRoutes from './routes/reservationRoutes.js'
 import reviewRoutes from './routes/reviewRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import imageRoutes from './routes/imageRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const app = express()
 
 // Connect to MongoDB (lazy — only once per cold start)
 let dbConnected = false
@@ -23,8 +21,6 @@ async function ensureDB() {
     dbConnected = true
   }
 }
-
-const app = express()
 
 // Allowed origins — localhost in dev, any Vercel preview/prod URL
 const allowedOrigins = [
@@ -53,8 +49,10 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+// Note: images are no longer served from local disk — they live in MongoDB
+// and are streamed back out via /api/images/:id (see routes/imageRoutes.js).
+// This is what makes uploads survive on serverless hosts with no persistent
+// filesystem, without needing an external storage service.
 
 // Ensure DB connected before any API route
 app.use('/api', async (_req, _res, next) => {
@@ -66,17 +64,19 @@ app.use('/api', async (_req, _res, next) => {
   }
 })
 
-// API Routes
-app.use('/api/auth', authRoutes)
-app.use('/api/listings', listingRoutes)
-app.use('/api/bookings', bookingRoutes)
+// API Routes — brief-exact paths (primary)
+app.use('/api/users', userRoutes)
+app.use('/api/accommodations', accommodationRoutes)
+app.use('/api/reservations', reservationRoutes)
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/upload', uploadRoutes)
+app.use('/api/images', imageRoutes)
 app.use('/api/admin', adminRoutes)
 
-// Brief-required aliases
-app.use('/api/accommodations', listingRoutes)
-app.use('/api/reservations', bookingRoutes)
+// Aliases kept so the existing client code (services/*.js) keeps working unmodified
+app.use('/api/auth', userRoutes)
+app.use('/api/listings', accommodationRoutes)
+app.use('/api/bookings', reservationRoutes)
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
