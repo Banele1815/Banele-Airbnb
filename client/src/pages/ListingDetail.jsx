@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext'
 import { getListing } from '../services/listingService'
 import { createBooking } from '../services/bookingService'
 import StarRating from '../components/common/StarRating'
+import ListingMap from '../components/common/ListingMap'
 
 const SPECIFIC_RATING_LABELS = [
   { key: 'cleanliness', label: 'Cleanliness' },
@@ -425,6 +426,13 @@ export default function ListingDetail() {
                 Free cancellation for 48 hours. After that, cancel before check-in and get a 50% refund, minus the first night and service fee.
               </p>
             </div>
+          </div>
+          <div className="pb-6 border-b border-airbnb-light">
+            <h3 className="text-xl font-semibold text-airbnb-dark mb-4">Where you'll be</h3>
+            <ListingMap location={listing.location} />
+            <p className="text-sm text-airbnb-gray mt-3 flex items-center gap-2">
+              <FiMapPin size={14} /> {listing.location} — exact location provided after booking
+            </p>
           </div>
         </div>
 
