@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { FiSliders, FiX } from 'react-icons/fi'
+import { FiSliders, FiX, FiMap, FiList } from 'react-icons/fi'
 import ListingCard from '../components/listings/ListingCard'
+import ListingsMapView from '../components/listings/ListingsMapView'
 import SearchBar from '../components/common/SearchBar'
 import { getListings } from '../services/listingService'
 import { DEMO_LISTINGS, filterDemoListings } from '../utils/seedData'
@@ -14,6 +15,7 @@ export default function Listings() {
   const [loading, setLoading] = useState(true)
   const [totalCount, setTotalCount] = useState(0)
   const [showFilters, setShowFilters] = useState(false)
+  const [showMapMobile, setShowMapMobile] = useState(false)
 
   // Local filter state (applied on "Apply")
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '')
@@ -86,7 +88,7 @@ export default function Listings() {
   const hasActiveFilters = filters.minPrice || filters.maxPrice || filters.propertyType
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Search bar */}
       <div className="mb-4">
         <SearchBar onSearch={handleSearch} initialValues={filters} />
@@ -239,41 +241,60 @@ export default function Listings() {
         </div>
       )}
 
-      {/* Results count */}
+      {/* Results count + mobile map toggle */}
       {!loading && (
-        <p className="text-sm text-airbnb-gray mb-4">
-          <span className="font-medium text-airbnb-dark">{totalCount}</span> {totalCount === 1 ? 'stay' : 'stays'}
-          {filters.location && <span> in <span className="font-medium text-airbnb-dark">{filters.location}</span></span>}
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm text-airbnb-gray">
+            <span className="font-medium text-airbnb-dark">{totalCount}</span> {totalCount === 1 ? 'stay' : 'stays'}
+            {filters.location && <span> in <span className="font-medium text-airbnb-dark">{filters.location}</span></span>}
+          </p>
+          <button
+            onClick={() => setShowMapMobile((v) => !v)}
+            className="lg:hidden flex items-center gap-2 text-sm font-medium border border-airbnb-dark rounded-full px-4 py-2"
+          >
+            {showMapMobile ? <><FiList size={14} /> Show list</> : <><FiMap size={14} /> Show map</>}
+          </button>
+        </div>
       )}
 
-      {/* Listings — stacked list (image-left/details-right cards per spec) */}
-      {loading ? (
-        <div className="flex flex-col gap-4 max-w-3xl">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="animate-pulse flex gap-4">
-              <div className="bg-gray-200 rounded-2xl w-48 h-32 flex-shrink-0" />
-              <div className="flex-1 space-y-2 py-2">
-                <div className="h-4 bg-gray-200 rounded w-1/2" />
-                <div className="h-3 bg-gray-200 rounded w-1/3" />
-                <div className="h-3 bg-gray-200 rounded w-1/4" />
-              </div>
+      {/* Listings — split list/map view (list left, sticky map right), like real Airbnb */}
+      <div className="lg:flex lg:gap-8 lg:items-start">
+        <div className={`flex-1 min-w-0 ${showMapMobile ? 'hidden lg:block' : ''}`}>
+          {loading ? (
+            <div className="flex flex-col gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="animate-pulse flex gap-4">
+                  <div className="bg-gray-200 rounded-2xl w-48 h-32 flex-shrink-0" />
+                  <div className="flex-1 space-y-2 py-2">
+                    <div className="h-4 bg-gray-200 rounded w-1/2" />
+                    <div className="h-3 bg-gray-200 rounded w-1/3" />
+                    <div className="h-3 bg-gray-200 rounded w-1/4" />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : listings.length === 0 ? (
+            <div className="text-center py-24 text-airbnb-gray">
+              <p className="text-2xl mb-2">No results</p>
+              <p className="text-sm mb-4">Try adjusting your search or filters</p>
+              <button onClick={clearFilters} className="btn-secondary text-sm">Clear filters</button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {listings.map((listing) => (
+                <ListingCard key={listing._id} listing={listing} />
+              ))}
+            </div>
+          )}
         </div>
-      ) : listings.length === 0 ? (
-        <div className="text-center py-24 text-airbnb-gray">
-          <p className="text-2xl mb-2">No results</p>
-          <p className="text-sm mb-4">Try adjusting your search or filters</p>
-          <button onClick={clearFilters} className="btn-secondary text-sm">Clear filters</button>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4 max-w-3xl">
-          {listings.map((listing) => (
-            <ListingCard key={listing._id} listing={listing} />
-          ))}
-        </div>
-      )}
+
+        {/* Map — sticky on desktop, full-screen toggle on mobile */}
+        {!loading && listings.length > 0 && (
+          <div className={`${showMapMobile ? 'block' : 'hidden'} lg:block lg:sticky lg:top-24 w-full lg:w-[42%] lg:flex-shrink-0 h-[60vh] lg:h-[calc(100vh-140px)] mt-4 lg:mt-0`}>
+            <ListingsMapView listings={listings} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
