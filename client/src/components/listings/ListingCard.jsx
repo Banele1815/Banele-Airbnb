@@ -22,10 +22,10 @@ export default function ListingCard({ listing }) {
       <Link
         to={`/listings/${listing._id}`}
         aria-label={listing.title}
-        className="flex gap-4 items-stretch bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-shadow"
+        className="flex gap-4 items-stretch h-40 sm:h-44 bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-shadow"
       >
         {/* Photo — left */}
-        <div className="relative w-40 sm:w-48 flex-shrink-0 overflow-hidden bg-gray-100">
+        <div className="relative w-40 sm:w-48 h-full flex-shrink-0 overflow-hidden bg-gray-100">
           <img
             src={photo}
             alt={listing.title}
@@ -54,7 +54,7 @@ export default function ListingCard({ listing }) {
         </div>
 
         {/* Details — right */}
-        <div className="flex-1 min-w-0 py-3 pr-4 flex flex-col justify-center gap-1.5">
+        <div className="flex-1 min-w-0 py-3 pr-4 flex flex-col justify-center gap-1.5 overflow-hidden">
           {listing.category && (
             <p className="text-xs font-medium text-airbnb-gray uppercase tracking-wide">
               {listing.category}
@@ -82,11 +82,9 @@ export default function ListingCard({ listing }) {
             {listing.maxGuests} guest{listing.maxGuests !== 1 ? 's' : ''}
           </p>
 
-          {amenities.length > 0 && (
-            <p className="text-xs text-airbnb-gray truncate">
-              {amenities.slice(0, 3).join(' · ')}
-            </p>
-          )}
+          <p className="text-xs text-airbnb-gray truncate min-h-[1rem]">
+            {amenities.length > 0 ? amenities.slice(0, 3).join(' · ') : '\u00A0'}
+          </p>
 
           <p className="text-sm text-airbnb-dark mt-1">
             <span className="font-semibold">R{listing.pricePerNight?.toLocaleString()}</span>
