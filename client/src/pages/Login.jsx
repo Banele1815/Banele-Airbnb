@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-// Demo accounts for quick login
 const DEMO_ACCOUNTS = [
   { label: 'Log in as Admin', email: 'admin@baneleairbnb.co.za', colour: 'bg-airbnb-red text-white hover:bg-red-600' },
   { label: 'Log in as Host', email: 'host@baneleairbnb.co.za', colour: 'bg-blue-600 text-white hover:bg-blue-700' },
@@ -23,13 +22,18 @@ export default function Login() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  // Just fills in the fields — user still clicks Log in
+  function handleFill(email) {
+    setFormData({ email, password: 'password123' })
+    setError('')
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
       const user = await login(formData.email, formData.password)
-      // Redirect admin straight to the dashboard
       if (user.role === 'admin') {
         navigate('/admin', { replace: true })
       } else {
@@ -37,24 +41,6 @@ export default function Login() {
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // One-click demo login
-  async function handleDemoLogin(email) {
-    setError('')
-    setLoading(true)
-    try {
-      const user = await login(email, 'password123')
-      if (user.role === 'admin') {
-        navigate('/admin', { replace: true })
-      } else {
-        navigate(from, { replace: true })
-      }
-    } catch (err) {
-      setError('Demo login failed. Make sure the seed script has been run.')
     } finally {
       setLoading(false)
     }
@@ -74,34 +60,28 @@ export default function Login() {
             <p className="text-airbnb-gray text-sm mt-1">Log in to your account</p>
           </div>
 
-          {/* Demo quick-login buttons */}
-          <div className="mb-6">
-            <p className="text-xs text-airbnb-gray font-medium uppercase tracking-wide mb-3 text-center">
-              Quick demo login
-            </p>
-            <div className="flex flex-col gap-2">
-              {DEMO_ACCOUNTS.map(({ label, email, colour }) => (
-                <button
-                  key={email}
-                  type="button"
-                  onClick={() => handleDemoLogin(email)}
-                  disabled={loading}
-                  className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 ${colour}`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+          {/* Fill-in buttons */}
+          <div className="flex flex-col gap-2 mb-6">
+            {DEMO_ACCOUNTS.map(({ label, email, colour }) => (
+              <button
+                key={email}
+                type="button"
+                onClick={() => handleFill(email)}
+                className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors ${colour}`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-6">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-airbnb-gray">or log in manually</span>
+            <span className="text-xs text-airbnb-gray">or enter your details</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* Manual login form */}
+          {/* Login form */}
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-airbnb-dark mb-1">
