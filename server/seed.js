@@ -327,14 +327,14 @@ async function seed() {
       bio: 'Platform administrator.',
     },
     {
-      name: 'Banele Dlamini',
+      name: 'Banele Kubeka',
       email: 'host@baneleairbnb.co.za',
       password: hashedPassword,
       role: 'host',
       bio: 'South African property host with listings across the Western Cape and KZN.',
     },
     {
-      name: 'Thembi Nkosi',
+      name: 'Siyamthanda Kubeka',
       email: 'guest@baneleairbnb.co.za',
       password: hashedPassword,
       role: 'guest',
