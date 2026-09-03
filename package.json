@@ -8,8 +8,14 @@
     "client": "npm run dev --prefix client",
     "server": "nodemon server/server.js",
     "build": "npm run build --prefix client",
-    "seed": "node server/seed.js"
+    "seed": "node server/seed.js",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --testPathPattern=server/tests --forceExit"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
+
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "concurrently": "^8.2.2",
