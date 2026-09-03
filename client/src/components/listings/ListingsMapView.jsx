@@ -32,7 +32,7 @@ export default function ListingsMapView({ listings }) {
     : SOUTH_AFRICA_CENTER
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-gray-200 h-full min-h-[400px]">
+      <div className="relative isolate rounded-2xl overflow-hidden border border-gray-200 h-full min-h-[400px]">
       <MapContainer
         center={center}
         zoom={points.length ? 11 : 5}

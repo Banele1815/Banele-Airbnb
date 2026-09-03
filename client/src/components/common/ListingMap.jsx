@@ -7,7 +7,7 @@ export default function ListingMap({ location }) {
   const { lat, lng } = getCoordinatesForLocation(location)
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-gray-200 h-[400px]">
+      <div className="relative isolate rounded-2xl overflow-hidden border border-gray-200 h-[400px]">
       <MapContainer
         center={[lat, lng]}
         zoom={13}
