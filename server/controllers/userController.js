@@ -23,7 +23,6 @@ function signToken(userId) {
  * POST /api/auth/register
  * Public — creates a new user account.
  * Body: { name, email, password, role? }
- * Role defaults to 'guest' if not provided.
  * Returns 409 if email is already registered.
  */
 export async function register(req, res, next) {
@@ -54,7 +53,6 @@ export async function register(req, res, next) {
  * Public — authenticates a user and returns a JWT token.
  * Body: { email, password }
  * Returns 401 if credentials are invalid.
- * Password field is selected explicitly (it has select:false on the model).
  */
 export async function login(req, res, next) {
   try {
@@ -83,7 +81,6 @@ export async function login(req, res, next) {
 /**
  * GET /api/auth/me
  * Protected — returns the currently authenticated user's profile.
- * The user is attached to req.user by the protect middleware.
  */
 export async function getMe(req, res, next) {
   try {
@@ -99,7 +96,6 @@ export async function getMe(req, res, next) {
  * PUT /api/auth/me
  * Protected — updates the logged-in user's name, bio, or password.
  * Body: { name?, bio?, currentPassword?, newPassword? }
- * Password change requires currentPassword for verification.
  * Returns 401 if currentPassword is wrong.
  */
 export async function updateMe(req, res, next) {
