@@ -1,7 +1,20 @@
+/**
+ * reservationController.js
+ * Handles all CRUD operations for bookings (reservations).
+ * Routes are mounted at /api/bookings and /api/reservations.
+ */
+
 import Reservation from '../models/Reservation.js'
 import Accommodation from '../models/Accommodation.js'
 
-// POST /api/bookings
+/**
+ * POST /api/bookings
+ * Protected — creates a new booking for the logged-in guest.
+ * Body: { listing, checkIn, checkOut, guests, totalPrice }
+ * Validates: listing exists, host not booking own listing,
+ *            guest count within limit, no date conflicts.
+ * Returns 201 with the populated booking document.
+ */
 export async function createBooking(req, res, next) {
   try {
     const { listing: listingId, checkIn, checkOut, guests, totalPrice } = req.body
@@ -20,6 +33,7 @@ export async function createBooking(req, res, next) {
       return res.status(400).json({ message: 'You cannot book your own listing.' })
     }
 
+    // Validate guest count against listing maximum
     if (Number(guests) > listing.maxGuests) {
       return res.status(400).json({
         message: `This listing allows a maximum of ${listing.maxGuests} guests.`,
@@ -39,6 +53,7 @@ export async function createBooking(req, res, next) {
       return res.status(409).json({ message: 'These dates are already booked.' })
     }
 
+    // Calculate total price server-side as a fallback
     const nights = Math.round(
       (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)
     )
@@ -61,7 +76,11 @@ export async function createBooking(req, res, next) {
   }
 }
 
-// GET /api/bookings/my  (guest)
+/**
+ * GET /api/bookings/my
+ * Protected — returns all bookings made by the logged-in guest, newest first.
+ * Populates listing details (title, location, photos, price).
+ */
 export async function getMyBookings(req, res, next) {
   try {
     const bookings = await Reservation.find({ guest: req.user._id })
@@ -73,7 +92,11 @@ export async function getMyBookings(req, res, next) {
   }
 }
 
-// GET /api/bookings/host  (host sees bookings on their listings)
+/**
+ * GET /api/bookings/host
+ * Protected (host) — returns all bookings on the logged-in host's listings.
+ * Populates listing and guest details.
+ */
 export async function getHostBookings(req, res, next) {
   try {
     // Find all listings that belong to this host
@@ -91,13 +114,18 @@ export async function getHostBookings(req, res, next) {
   }
 }
 
-// PUT /api/bookings/:id/cancel
+/**
+ * PUT /api/bookings/:id/cancel
+ * Protected — cancels a booking.
+ * Only the guest who made the booking or the listing's host can cancel.
+ * Returns 400 if booking is already cancelled or completed.
+ */
 export async function cancelBooking(req, res, next) {
   try {
     const booking = await Reservation.findById(req.params.id)
     if (!booking) return res.status(404).json({ message: 'Reservation not found.' })
 
-    // Only the guest who made it (or the host of the listing) can cancel
+    // Allow cancellation by the guest or the listing's host
     const isGuest = booking.guest.toString() === req.user._id.toString()
     const listing = await Accommodation.findById(booking.listing)
     const isHost = listing?.host.toString() === req.user._id.toString()
@@ -121,7 +149,12 @@ export async function cancelBooking(req, res, next) {
   }
 }
 
-// DELETE /api/reservations/:id  (brief-required hard delete)
+/**
+ * DELETE /api/reservations/:id
+ * Protected — permanently deletes a reservation (hard delete).
+ * Only the guest or the listing's host may delete it.
+ * Returns 403 if neither owner nor host.
+ */
 export async function deleteReservation(req, res, next) {
   try {
     const booking = await Reservation.findById(req.params.id)
@@ -142,7 +175,11 @@ export async function deleteReservation(req, res, next) {
   }
 }
 
-// PUT /api/bookings/:id/confirm  (host only)
+/**
+ * PUT /api/bookings/:id/confirm
+ * Protected (host) — confirms a pending booking on the host's listing.
+ * Returns 403 if the requester is not the listing's host.
+ */
 export async function confirmBooking(req, res, next) {
   try {
     const booking = await Reservation.findById(req.params.id)
