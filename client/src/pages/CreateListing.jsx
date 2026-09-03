@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createListing } from '../services/listingService'
+import { uploadImages } from '../services/adminService'
 
 const PROPERTY_TYPES = ['Apartment', 'House', 'Villa', 'Cabin', 'Cottage', 'Loft', 'Studio', 'Farm']
 const CATEGORIES = ['Beachfront', 'Cabins', 'Amazing views', 'Tiny homes', 'Farms', 'Luxury', 'Pools', 'Countryside']
@@ -14,6 +15,7 @@ export default function CreateListing() {
   const [step, setStep] = useState(1)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -53,6 +55,20 @@ export default function CreateListing() {
   function handlePhotoInput(e) {
     const urls = e.target.value.split('\n').map((s) => s.trim()).filter(Boolean)
     setFormData((prev) => ({ ...prev, photos: urls }))
+  }
+
+    async function handleFileUpload(e) {
+    const files = Array.from(e.target.files)
+    if (!files.length) return
+    setUploading(true)
+    try {
+      const urls = await uploadImages(files)
+      setFormData((prev) => ({ ...prev, photos: [...prev.photos, ...urls] }))
+    } catch (err) {
+      setError('Image upload failed. Please try again.')
+    } finally {
+      setUploading(false)
+    }
   }
 
   function validateStep() {
@@ -218,19 +234,34 @@ export default function CreateListing() {
 
         {/* Step 3: Photos */}
         {step === 3 && (
-          <div>
-            <label htmlFor="photos" className="block text-sm font-medium text-airbnb-dark mb-1">
-              Photo URLs (one per line)
-            </label>
-            <textarea
-              id="photos"
-              rows={6}
-              className="input-field resize-none font-mono text-sm"
-              placeholder={`https://images.unsplash.com/photo-...\nhttps://images.unsplash.com/photo-...`}
-              defaultValue={formData.photos.join('\n')}
-              onChange={handlePhotoInput}
-            />
-            <p className="text-xs text-airbnb-gray mt-1">Paste public image URLs. First photo is the cover photo.</p>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-airbnb-dark mb-1">Upload images</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileUpload}
+                className="block w-full text-sm text-airbnb-gray file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-airbnb-red file:text-white hover:file:bg-rose-600 cursor-pointer"
+              />
+              {uploading && <p className="text-sm text-airbnb-gray mt-1">Uploading…</p>}
+            </div>
+
+            <div>
+              <label htmlFor="photos" className="block text-sm font-medium text-airbnb-dark mb-1">
+                Or paste photo URLs (one per line)
+              </label>
+              <textarea
+                id="photos"
+                rows={6}
+                className="input-field resize-none font-mono text-sm"
+                placeholder={`https://images.unsplash.com/photo-...\nhttps://images.unsplash.com/photo-...`}
+                defaultValue={formData.photos.join('\n')}
+                onChange={handlePhotoInput}
+              />
+              <p className="text-xs text-airbnb-gray mt-1">First photo is the cover photo.</p>
+            </div>
+
             {formData.photos.length > 0 && (
               <div className="grid grid-cols-3 gap-2 mt-4">
                 {formData.photos.slice(0, 6).map((url, i) => (
@@ -240,12 +271,6 @@ export default function CreateListing() {
                 ))}
               </div>
             )}
-          </div>
-        )}
-
-        {error && (
-          <div role="alert" className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
-            {error}
           </div>
         )}
 
@@ -263,7 +288,7 @@ export default function CreateListing() {
               Next
             </button>
           ) : (
-            <button type="submit" disabled={loading} className="btn-primary">
+              <button type="submit" disabled={loading || uploading} className="btn-primary">
               {loading ? 'Publishing...' : 'Publish listing'}
             </button>
           )}
