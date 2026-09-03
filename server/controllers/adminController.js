@@ -5,16 +5,83 @@ import Reservation from '../models/Reservation.js'
 // GET /api/admin/stats
 export async function getStats(req, res, next) {
   try {
-    const [users, listings, bookings] = await Promise.all([
+    // Run all queries in parallel for efficiency
+    const [
+      users,
+      listings,
+      bookings,
+      revenueAgg,
+      statusAgg,
+      recentBookings,
+      recentListings,
+      newUsersThisMonth,
+    ] = await Promise.all([
+      // Total counts
       User.countDocuments(),
       Accommodation.countDocuments({ isActive: true }),
       Reservation.countDocuments(),
+
+      // Total revenue from confirmed + completed bookings
+      Reservation.aggregate([
+        { $match: { status: { $in: ['confirmed', 'completed'] } } },
+        { $group: { _id: null, total: { $sum: '$totalPrice' } } },
+      ]),
+
+      // Booking status breakdown
+      Reservation.aggregate([
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+      ]),
+
+      // 5 most recent bookings with listing + guest details
+      Reservation.find()
+        .populate('listing', 'title location photos')
+        .populate('guest', 'name email')
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean(),
+
+      // 5 most recently created listings
+      Accommodation.find()
+        .populate('host', 'name')
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select('title location pricePerNight photos avgRating propertyType createdAt')
+        .lean(),
+
+      // Users registered in the current calendar month
+      User.countDocuments({
+        createdAt: {
+          $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        },
+      }),
     ])
-    res.json({ users, listings, bookings })
+
+    // Shape status breakdown into a plain object { confirmed: N, pending: N, ... }
+    const statusMap = {}
+    for (const s of statusAgg) {
+      statusMap[s._id] = s.count
+    }
+
+    res.json({
+      users,
+      listings,
+      bookings,
+      revenue: revenueAgg[0]?.total ?? 0,
+      newUsersThisMonth,
+      statusBreakdown: {
+        confirmed: statusMap.confirmed ?? 0,
+        pending: statusMap.pending ?? 0,
+        cancelled: statusMap.cancelled ?? 0,
+        completed: statusMap.completed ?? 0,
+      },
+      recentBookings,
+      recentListings,
+    })
   } catch (err) {
     next(err)
   }
 }
+
 
 // GET /api/admin/users
 export async function getUsers(req, res, next) {
