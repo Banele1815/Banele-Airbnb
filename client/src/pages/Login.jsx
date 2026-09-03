@@ -2,6 +2,13 @@ import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+// Demo accounts for quick login
+const DEMO_ACCOUNTS = [
+  { label: 'Log in as Admin', email: 'admin@baneleairbnb.co.za', colour: 'bg-airbnb-red text-white hover:bg-red-600' },
+  { label: 'Log in as Host', email: 'host@baneleairbnb.co.za', colour: 'bg-blue-600 text-white hover:bg-blue-700' },
+  { label: 'Log in as Guest', email: 'guest@baneleairbnb.co.za', colour: 'bg-gray-700 text-white hover:bg-gray-800' },
+]
+
 export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -21,10 +28,33 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      await login(formData.email, formData.password)
-      navigate(from, { replace: true })
+      const user = await login(formData.email, formData.password)
+      // Redirect admin straight to the dashboard
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate(from, { replace: true })
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // One-click demo login
+  async function handleDemoLogin(email) {
+    setError('')
+    setLoading(true)
+    try {
+      const user = await login(email, 'password123')
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate(from, { replace: true })
+      }
+    } catch (err) {
+      setError('Demo login failed. Make sure the seed script has been run.')
     } finally {
       setLoading(false)
     }
@@ -34,6 +64,7 @@ export default function Login() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+
           {/* Header */}
           <div className="text-center mb-8">
             <svg viewBox="0 0 32 32" className="h-10 w-10 fill-airbnb-red mx-auto mb-3">
@@ -43,6 +74,34 @@ export default function Login() {
             <p className="text-airbnb-gray text-sm mt-1">Log in to your account</p>
           </div>
 
+          {/* Demo quick-login buttons */}
+          <div className="mb-6">
+            <p className="text-xs text-airbnb-gray font-medium uppercase tracking-wide mb-3 text-center">
+              Quick demo login
+            </p>
+            <div className="flex flex-col gap-2">
+              {DEMO_ACCOUNTS.map(({ label, email, colour }) => (
+                <button
+                  key={email}
+                  type="button"
+                  onClick={() => handleDemoLogin(email)}
+                  disabled={loading}
+                  className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 ${colour}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs text-airbnb-gray">or log in manually</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          {/* Manual login form */}
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-airbnb-dark mb-1">
@@ -94,6 +153,7 @@ export default function Login() {
               Sign up
             </Link>
           </div>
+
         </div>
       </div>
     </div>
