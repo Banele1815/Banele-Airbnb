@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createListing } from '../services/listingService'
 import { uploadImages } from '../services/adminService'
@@ -16,6 +16,7 @@ export default function CreateListing() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const lastAdvanceRef = useRef(0)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -283,12 +284,30 @@ export default function CreateListing() {
           ) : (
             <div />
           )}
-          {step < 3 ? (
-            <button type="button" onClick={() => { if (validateStep()) setStep((s) => s + 1) }} className="btn-primary">
+            {step < 3 ? (
+            <button
+              type="button"
+              onClick={() => {
+                if (validateStep()) {
+                  lastAdvanceRef.current = Date.now()
+                  setStep((s) => s + 1)
+                }
+              }}
+              className="btn-primary"
+            >
               Next
             </button>
           ) : (
-              <button type="submit" disabled={loading || uploading} className="btn-primary">
+            <button
+              type="submit"
+              disabled={loading || uploading}
+              onClick={(e) => {
+                if (Date.now() - lastAdvanceRef.current < 400) {
+                  e.preventDefault()
+                }
+              }}
+              className="btn-primary"
+            >
               {loading ? 'Publishing...' : 'Publish listing'}
             </button>
           )}
