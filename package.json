@@ -1,32 +1,10 @@
-{
-  "name": "banele-airbnb",
-  "version": "1.0.0",
-  "description": "A full-stack Airbnb clone",
-  "type": "module",
-  "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "client": "npm run dev --prefix client",
-    "server": "nodemon server/server.js",
-    "build": "npm run build --prefix client",
-    "seed": "node server/seed.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --testPathPattern=server/tests --forceExit"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {}
-  },
-
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "concurrently": "^8.2.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.0.3",
-    "multer": "^1.4.5-lts.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
-  }
+"scripts": {
+  "dev": "concurrently \"npm run server\" \"npm run client\"",
+  "client": "npm run dev --prefix client",
+  "server": "nodemon server/server.js",
+  "build": "npm run build --prefix client",
+  "heroku-postbuild": "npm install --prefix client && npm run build --prefix client",
+  "start": "node server/server.js",
+  "seed": "node server/seed.js",
+  "test": "node --experimental-vm-modules node_modules/.bin/jest --testPathPattern=server/tests --forceExit"
 }

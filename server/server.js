@@ -1,6 +1,9 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import fs from 'fs'
 import connectDB from './config/db.js'
 import userRoutes from './routes/userRoutes.js'
 import accommodationRoutes from './routes/accommodationRoutes.js'
@@ -22,7 +25,7 @@ async function ensureDB() {
   }
 }
 
-// Allowed origins — localhost in dev, any Vercel preview/prod URL
+// Allowed origins — localhost in dev, any Vercel/Heroku URL
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
@@ -32,11 +35,12 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (curl, Postman, same-origin on Vercel)
+      // Allow requests with no origin (curl, Postman, same-origin on Heroku)
       if (!origin) return callback(null, true)
       if (
         allowedOrigins.includes(origin) ||
-        /\.vercel\.app$/.test(origin)
+        /\.vercel\.app$/.test(origin) ||
+        /\.herokuapp\.com$/.test(origin)
       ) {
         return callback(null, true)
       }
@@ -80,6 +84,18 @@ app.use('/api/bookings', reservationRoutes)
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
+
+// Serve built React frontend in production (Heroku)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const clientDist = join(__dirname, '../client/dist')
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist))
+  // All non-API routes return the React app (handles client-side routing)
+  app.get('*', (_req, res) => {
+    res.sendFile(join(clientDist, 'index.html'))
+  })
+}
 
 // Error handling
 app.use(notFound)
