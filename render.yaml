@@ -1,5 +1,5 @@
 services:
-  # Backend API Web Service
+  # Backend API Web Process
   - type: web
     name: banele-airbnb-backend
     env: node
@@ -19,10 +19,9 @@ services:
       - key: CLIENT_URL
         sync: false
 
-  # Frontend Static Site
-  - type: web
-    name: banele-airbnb-frontend
-    env: static
+statics:
+  # Frontend Static Application
+  - name: banele-airbnb-frontend
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
