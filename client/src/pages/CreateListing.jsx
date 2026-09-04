@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createListing } from '../services/listingService'
 import { uploadImages } from '../services/adminService'
+import { FiCheck } from 'react-icons/fi'
 
 const PROPERTY_TYPES = ['Apartment', 'House', 'Villa', 'Cabin', 'Cottage', 'Loft', 'Studio', 'Farm']
 const CATEGORIES = ['Beachfront', 'Cabins', 'Amazing views', 'Tiny homes', 'Farms', 'Luxury', 'Pools', 'Countryside']
@@ -111,7 +112,7 @@ export default function CreateListing() {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
               s === step ? 'bg-airbnb-dark text-white' : s < step ? 'bg-airbnb-red text-white' : 'bg-gray-200 text-airbnb-gray'
             }`}>
-              {s < step ? '✓' : s}
+              {s < step ? <FiCheck size={16} /> : s}
             </div>
             {s < 3 && <div className={`h-0.5 w-12 ${s < step ? 'bg-airbnb-red' : 'bg-gray-200'}`} />}
           </div>
