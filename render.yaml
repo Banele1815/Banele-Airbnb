@@ -19,9 +19,10 @@ services:
       - key: CLIENT_URL
         sync: false
 
-statics:
   # Frontend Static Site
-  - name: banele-airbnb-frontend
+  - type: web
+    name: banele-airbnb-frontend
+    env: static
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
