@@ -5,31 +5,37 @@ import SearchBar from '../components/common/SearchBar'
 import { getListings } from '../services/listingService'
 import { DEMO_LISTINGS, filterDemoListings } from '../utils/seedData'
 
+import {
+  FiGrid, FiSun, FiEye, FiStar, FiGift, FiHome, FiSend, FiGlobe,
+  FiCompass, FiMusic, FiActivity, FiArrowRight,
+} from 'react-icons/fi'
+import { MdOutlineCottage, MdOutlineGrass, MdOutlineForest, MdOutlinePool, MdOutlineLocationCity, MdOutlineRestaurant, MdOutlinePalette } from 'react-icons/md'
+
 const CATEGORIES = [
-  { label: 'Beachfront', icon: '🏖️' },
-  { label: 'Cabins', icon: '🏕️' },
-  { label: 'Amazing views', icon: '🌄' },
-  { label: 'Tiny homes', icon: '🏠' },
-  { label: 'Farms', icon: '🌾' },
-  { label: 'Luxury', icon: '✨' },
-  { label: 'Pools', icon: '🏊' },
-  { label: 'Countryside', icon: '🌿' },
+  { label: 'Beachfront', Icon: FiSun },
+  { label: 'Cabins', Icon: MdOutlineCottage },
+  { label: 'Amazing views', Icon: FiEye },
+  { label: 'Tiny homes', Icon: FiHome },
+  { label: 'Farms', Icon: MdOutlineGrass },
+  { label: 'Luxury', Icon: FiStar },
+  { label: 'Pools', Icon: MdOutlinePool },
+  { label: 'Countryside', Icon: MdOutlineForest },
 ]
 
 const EXPERIENCES = [
-  { title: 'Cooking classes', icon: '🍳', count: '1,200+ experiences' },
-  { title: 'Art & crafts', icon: '🎨', count: '850+ experiences' },
-  { title: 'Outdoor adventures', icon: '🧗', count: '2,400+ experiences' },
-  { title: 'Music & dance', icon: '🎵', count: '640+ experiences' },
+  { title: 'Cooking classes', Icon: MdOutlineRestaurant, count: '1,200+ experiences' },
+  { title: 'Art & crafts', Icon: MdOutlinePalette, count: '850+ experiences' },
+  { title: 'Outdoor adventures', Icon: FiActivity, count: '2,400+ experiences' },
+  { title: 'Music & dance', Icon: FiMusic, count: '640+ experiences' },
 ]
 
 const INSPIRATION_TABS = ['South Africa', 'Africa', 'Beach escapes', 'Mountain retreats']
 
 const GETAWAYS = [
-  { label: 'Beach houses', emoji: '🏖️', query: 'Beachfront', description: 'Wake up steps from the sand' },
-  { label: 'Unique stays', emoji: '🌿', query: 'Countryside', description: 'Quiet, off-the-beaten-path homes' },
-  { label: 'Luxury villas', emoji: '✨', query: 'Luxury', description: 'Space and style for a special trip' },
-  { label: 'Mountain cabins', emoji: '🏔️', query: 'Cabins', description: 'Cosy retreats above the clouds' },
+  { label: 'Beach houses', Icon: FiSun, query: 'Beachfront', description: 'Wake up steps from the sand' },
+  { label: 'Unique stays', Icon: FiCompass, query: 'Countryside', description: 'Quiet, off-the-beaten-path homes' },
+  { label: 'Luxury villas', Icon: FiStar, query: 'Luxury', description: 'Space and style for a special trip' },
+  { label: 'Mountain cabins', Icon: MdOutlineCottage, query: 'Cabins', description: 'Cosy retreats above the clouds' },
 ]
 
 const INSPIRATION_DATA = {
@@ -121,7 +127,7 @@ export default function Home() {
                 !activeCategory ? 'border-airbnb-dark text-airbnb-dark' : 'border-transparent text-airbnb-gray hover:text-airbnb-dark hover:border-gray-300'
               }`}
             >
-              <span className="text-2xl">🏡</span>
+              <FiGrid size={24} />
               <span className="text-xs font-medium">All</span>
             </button>
             {CATEGORIES.map((cat) => (
@@ -132,7 +138,7 @@ export default function Home() {
                   activeCategory === cat.label ? 'border-airbnb-dark text-airbnb-dark' : 'border-transparent text-airbnb-gray hover:text-airbnb-dark hover:border-gray-300'
                 }`}
               >
-                <span className="text-2xl">{cat.icon}</span>
+                <cat.Icon size={24} />
                 <span className="text-xs font-medium">{cat.label}</span>
               </button>
             ))}
@@ -199,7 +205,7 @@ export default function Home() {
                 className="flex items-center gap-4 p-3 bg-white rounded-2xl hover:shadow-md transition-shadow group"
               >
                 <div className="w-16 h-16 bg-gradient-to-br from-rose-100 to-pink-200 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
-                  🏙️
+                  <MdOutlineLocationCity size={26} />
                 </div>
                 <div className="min-w-0">
                   <p className="font-semibold text-airbnb-dark group-hover:underline">{item.city}</p>
@@ -223,7 +229,7 @@ export default function Home() {
                 key={exp.title}
                 className="bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl p-6 text-center hover:shadow-md transition-shadow cursor-pointer"
               >
-                <div className="text-4xl mb-3">{exp.icon}</div>
+                <div className="text-4xl mb-3"><exp.Icon size={36} /></div>
                 <p className="font-semibold text-airbnb-dark text-sm">{exp.title}</p>
                 <p className="text-xs text-airbnb-gray mt-1">{exp.count}</p>
               </div>
@@ -271,12 +277,12 @@ export default function Home() {
             </div>
             <div className="flex justify-center">
               <div className="grid grid-cols-2 gap-3 max-w-xs">
-                {['🎁', '🏡', '✈️', '🌍'].map((emoji, i) => (
+                                {[FiGift, FiHome, FiSend, FiGlobe].map((Icon, i) => (
                   <div
                     key={i}
                     className="aspect-square bg-gradient-to-br from-rose-100 to-pink-200 rounded-2xl flex items-center justify-center text-4xl"
                   >
-                    {emoji}
+                    <Icon size={32} />
                   </div>
                 ))}
               </div>
@@ -316,9 +322,7 @@ export default function Home() {
                   to={`/listings?category=${encodeURIComponent(item.query)}`}
                   className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 aspect-[3/4] flex items-end p-4 hover:shadow-lg transition-shadow"
                 >
-                  <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-30">
-                    {item.emoji}
-                  </div>
+                 <div className="absolute inset-0 flex items-center justify-center opacity-30"><item.Icon size={72} /></div>
                   <p className="relative font-semibold text-airbnb-dark group-hover:underline">{item.label}</p>
                 </Link>
               ))}
@@ -332,14 +336,14 @@ export default function Home() {
                   to={`/listings?category=${encodeURIComponent(item.query)}`}
                   className="flex items-center gap-4 py-4 hover:bg-gray-50 transition-colors px-2 group"
                 >
-                  <div className="w-12 h-12 flex-shrink-0 rounded-xl bg-gradient-to-br from-rose-100 to-pink-200 flex items-center justify-center text-2xl">
-                    {item.emoji}
+                  <div className="w-12 h-12 flex-shrink-0 rounded-xl bg-gradient-to-br from-rose-100 to-pink-200 flex items-center justify-center ">
+                    <item.Icon size={22} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-airbnb-dark group-hover:underline">{item.label}</p>
                     <p className="text-xs text-airbnb-gray">{item.description}</p>
                   </div>
-                  <span className="text-airbnb-gray group-hover:text-airbnb-dark transition-colors">→</span>
+                  <FiArrowRight className="text-airbnb-gray group-hover:text-airbnb-dark transition-colors" />
                 </Link>
               ))}
             </div>
