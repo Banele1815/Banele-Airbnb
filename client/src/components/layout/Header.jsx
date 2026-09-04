@@ -23,7 +23,7 @@ export default function Header() {
           {/* Logo */}
             <Link to="/" className="flex items-center gap-1.5">
             <img src={logo} alt="Banele Airbnb" className="h-8 w-8 object-contain" />
-            <span className="text-airbnb-red font-bold text-xl hidden sm:block">Banele</span>
+            <span className="text-airbnb-red font-bold text-xl hidden sm:block">Airbnb</span>
           </Link>
 
           {/* Search bar (desktop) */}
