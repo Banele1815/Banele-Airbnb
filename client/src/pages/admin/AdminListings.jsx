@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { FiEdit2, FiTrash2, FiPlus, FiSearch } from 'react-icons/fi'
+import { FiEdit2, FiTrash2, FiPlus, FiSearch , FiStar} from 'react-icons/fi'
 import { getAdminListings, adminDeleteListing } from '../../services/adminService'
 
 export default function AdminListings() {

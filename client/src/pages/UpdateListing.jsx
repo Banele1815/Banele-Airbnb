@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getListing, updateListing } from '../services/listingService'
 import { uploadImages } from '../services/adminService'
 import useRequireAuth from '../hooks/useRequireAuth'
+import { FiCheck, FiX } from 'react-icons/fi'
 
 const PROPERTY_TYPES = ['Apartment', 'House', 'Villa', 'Cabin', 'Cottage', 'Loft', 'Studio', 'Farm']
 const CATEGORIES = ['Beachfront', 'Cabins', 'Amazing views', 'Tiny homes', 'Farms', 'Luxury', 'Pools', 'Countryside']
@@ -149,7 +150,7 @@ export default function UpdateListing() {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
               s === step ? 'bg-airbnb-dark text-white' : s < step ? 'bg-airbnb-red text-white' : 'bg-gray-200 text-airbnb-gray'
             }`}>
-              {s < step ? '✓' : s}
+              {s < step ? <FiCheck size={16} /> : s}
             </div>
             {s < 3 && <div className={`h-0.5 w-12 ${s < step ? 'bg-airbnb-red' : 'bg-gray-200'}`} />}
           </div>
@@ -285,7 +286,7 @@ export default function UpdateListing() {
                         type="button"
                         onClick={() => removePhoto(i)}
                         className="absolute top-1 right-1 bg-black/60 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      >✕</button>
+                      ><FiX size={12} /></button>
                       {i === 0 && <span className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded">Cover</span>}
                     </div>
                   ))}
