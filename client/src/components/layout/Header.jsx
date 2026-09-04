@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiGlobe, FiMenu, FiUser } from 'react-icons/fi'
 import { useAuth } from '../../context/AuthContext'
+import logo from '../../assets/logo.png'
 
 export default function Header() {
   const { user, logout } = useAuth()
@@ -20,11 +21,9 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1">
-            <svg viewBox="0 0 32 32" className="h-8 w-8 fill-airbnb-red" aria-hidden="true">
-              <path d="M16 1C10.477 1 6 7.477 6 14c0 7.732 9.057 16.122 9.444 16.484a.75.75 0 0 0 1.112 0C16.943 30.122 26 21.732 26 14c0-6.523-4.477-13-10-13zm0 18.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
-            </svg>
-            <span className="text-airbnb-red font-bold text-xl hidden sm:block">airbnb</span>
+            <Link to="/" className="flex items-center gap-1.5">
+            <img src={logo} alt="Banele Airbnb" className="h-8 w-8 object-contain" />
+            <span className="text-airbnb-red font-bold text-xl hidden sm:block">Banele</span>
           </Link>
 
           {/* Search bar (desktop) */}
