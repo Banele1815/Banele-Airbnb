@@ -8,8 +8,6 @@
     "client": "npm run dev --prefix client",
     "server": "nodemon server/server.js",
     "build": "npm run build --prefix client",
-    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client",
-    "start": "node server/server.js",
     "seed": "node server/seed.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --testPathPattern=server/tests --forceExit"
   },
@@ -17,6 +15,7 @@
     "testEnvironment": "node",
     "transform": {}
   },
+
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "concurrently": "^8.2.2",
