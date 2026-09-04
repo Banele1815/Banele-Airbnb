@@ -126,7 +126,7 @@ export default function AdminListings() {
                       R{listing.pricePerNight?.toLocaleString()}
                     </td>
                     <td className="px-4 py-3 text-airbnb-gray hidden sm:table-cell">
-                      {listing.avgRating > 0 ? `★ ${listing.avgRating.toFixed(1)}` : '—'}
+                      {listing.avgRating > 0 ? <span className="flex items-center gap-1"><FiStar size={12} /> {listing.avgRating.toFixed(1)}</span> : '—'}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">

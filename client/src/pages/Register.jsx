@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { FiSun, FiHome } from 'react-icons/fi'
 
 export default function Register() {
   const { register } = useAuth()
@@ -147,7 +148,7 @@ export default function Register() {
                       onChange={handleChange}
                       className="sr-only"
                     />
-                    <span className="text-lg">{r === 'guest' ? '🏖️' : '🏡'}</span>
+                    {r === 'guest' ? <FiSun size={20} /> : <FiHome size={20} />}
                     <span className="text-sm capitalize">{r === 'guest' ? 'Book stays' : 'Host my home'}</span>
                   </label>
                 ))}

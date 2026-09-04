@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { FiSliders, FiX, FiMap, FiList } from 'react-icons/fi'
+import { FiSliders, FiX, FiMap, FiList, FiMapPin } from 'react-icons/fi'
 import ListingCard from '../components/listings/ListingCard'
 import ListingsMapView from '../components/listings/ListingsMapView'
 import SearchBar from '../components/common/SearchBar'
@@ -124,7 +124,7 @@ export default function Listings() {
         )}
         {filters.location && (
           <span className="flex items-center gap-1.5 text-sm bg-gray-100 text-airbnb-dark px-3 py-1.5 rounded-full">
-            📍 {filters.location}
+            <FiMapPin size={13} className="inline mr-0.5" /> {filters.location}
             <button onClick={() => { const n = new URLSearchParams(searchParams); n.delete('location'); setSearchParams(n) }}>
               <FiX size={13} />
             </button>
