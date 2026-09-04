@@ -52,7 +52,7 @@ export default function SearchBar({ onSearch, initialValues = {} }) {
       </div>
 
       {/* Check-in */}
-      <div className="flex items-center gap-2 px-5 py-3 md:w-44 border-b md:border-b-0 md:border-r border-gray-200">
+      <div className="relative z-20 flex items-center gap-2 px-5 py-3 md:w-44 border-b md:border-b-0 md:border-r border-gray-200">
         <FiCalendar size={16} className="text-airbnb-gray flex-shrink-0" />
         <div className="flex-1">
           <label className="block text-xs font-bold text-airbnb-dark">Check in</label>
@@ -66,12 +66,13 @@ export default function SearchBar({ onSearch, initialValues = {} }) {
             placeholderText="Add date"
             className="w-full text-sm text-airbnb-dark outline-none cursor-pointer placeholder:text-airbnb-gray"
             dateFormat="d MMM yyyy"
+            portalId="root-portal"
           />
         </div>
       </div>
 
       {/* Check-out */}
-      <div className="flex items-center gap-2 px-5 py-3 md:w-44 border-b md:border-b-0 md:border-r border-gray-200">
+      <div className="relative z-20 flex items-center gap-2 px-5 py-3 md:w-44 border-b md:border-b-0 md:border-r border-gray-200">
         <FiCalendar size={16} className="text-airbnb-gray flex-shrink-0" />
         <div className="flex-1">
           <label className="block text-xs font-bold text-airbnb-dark">Check out</label>
@@ -85,6 +86,7 @@ export default function SearchBar({ onSearch, initialValues = {} }) {
             placeholderText="Add date"
             className="w-full text-sm text-airbnb-dark outline-none cursor-pointer placeholder:text-airbnb-gray"
             dateFormat="d MMM yyyy"
+            portalId="root-portal"
           />
         </div>
       </div>
