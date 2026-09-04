@@ -24,3 +24,10 @@
 .react-datepicker-wrapper {
   width: 100%;
 }
+
+/* Ensure the calendar popup floats above sticky sections (category bar,
+   header) and the listings grid below it, instead of getting painted under
+   them. */
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
