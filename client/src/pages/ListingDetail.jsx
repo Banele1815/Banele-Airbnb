@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   FiShare2, FiHeart, FiStar, FiMapPin, FiUsers,
-  FiBriefcase, FiHome, FiShield, FiCheck, FiChevronDown, FiChevronUp,
+  FiBriefcase, FiHome, FiShield, FiCheck, FiChevronDown, FiChevronUp, FiCheckCircle, FiClipboard
 } from 'react-icons/fi'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -11,6 +11,7 @@ import { getListing } from '../services/listingService'
 import { createBooking } from '../services/bookingService'
 import StarRating from '../components/common/StarRating'
 import ListingMap from '../components/common/ListingMap'
+import { MdOutlineBed } from 'react-icons/md'
 
 const SPECIFIC_RATING_LABELS = [
   { key: 'cleanliness', label: 'Cleanliness' },
@@ -253,7 +254,7 @@ export default function ListingDetail() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {Array.from({ length: listing.bedrooms || 1 }, (_, i) => (
                 <div key={i} className="border border-gray-200 rounded-2xl p-5">
-                  <span className="text-3xl mb-2 block">🛏️</span>
+                  <MdOutlineBed size={30} className="mb-2 text-airbnb-dark" />
                   <p className="font-medium text-airbnb-dark text-sm">Bedroom {i + 1}</p>
                   <p className="text-xs text-airbnb-gray">1 queen bed</p>
                 </div>
@@ -363,8 +364,8 @@ export default function ListingDetail() {
                   <p className="text-sm text-airbnb-dark leading-relaxed">{listing.host.bio}</p>
                 )}
                 <div className="flex items-center gap-4 mt-3 text-sm text-airbnb-gray">
-                  {listing.reviewCount > 0 && <span>⭐ {listing.reviewCount} reviews</span>}
-                  <span>✓ Identity verified</span>
+                  {listing.reviewCount > 0 && <span className="flex items-center gap-1"><FiStar size={14} /> {listing.reviewCount} reviews</span>}
+                  <span className="flex items-center gap-1"><FiCheckCircle size={14} /> Identity verified</span>
                 </div>
               </div>
             </div>
@@ -377,19 +378,19 @@ export default function ListingDetail() {
             {[
               {
                 title: 'House rules',
-                icon: '🏠',
+                Icon: FiHome,
                 items: ['Check-in: 3:00 PM – 10:00 PM', 'Checkout: 11:00 AM', 'No smoking', 'No pets', 'No parties or events', `Maximum ${listing.maxGuests} guests`],
                 state: showHouseRules,
                 setState: setShowHouseRules,
               },
-            ].map(({ title, icon, items, state, setState }) => (
+            ].map(({ title, Icon, items, state, setState }) => (
               <div key={title} className="border border-gray-200 rounded-2xl p-5">
                 <button
                   onClick={() => setState((v) => !v)}
                   className="w-full flex items-center justify-between"
                 >
                   <span className="font-semibold text-airbnb-dark flex items-center gap-2">
-                    <span>{icon}</span>{title}
+                    <Icon size={18} />{title}
                   </span>
                   {state ? <FiChevronUp size={18} /> : <FiChevronDown size={18} />}
                 </button>
@@ -407,7 +408,7 @@ export default function ListingDetail() {
 
             <div className="border border-gray-200 rounded-2xl p-5">
               <h4 className="font-semibold text-airbnb-dark mb-3 flex items-center gap-2">
-                <span>🛡️</span> Health &amp; safety
+                <FiShield size={18} /> Health &amp; safety
               </h4>
               <ul className="space-y-2">
                 {['Committed to Airbnb\'s enhanced cleaning process', 'Airbnb\'s social-distancing guidelines apply', 'Carbon monoxide alarm installed', 'Smoke alarm installed'].map((item) => (
@@ -420,7 +421,7 @@ export default function ListingDetail() {
 
             <div className="border border-gray-200 rounded-2xl p-5">
               <h4 className="font-semibold text-airbnb-dark mb-3 flex items-center gap-2">
-                <span>📋</span> Cancellation policy
+                <FiClipboard size={18} /> Cancellation policy
               </h4>
               <p className="text-sm text-airbnb-dark">
                 Free cancellation for 48 hours. After that, cancel before check-in and get a 50% refund, minus the first night and service fee.
