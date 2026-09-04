@@ -1,5 +1,12 @@
-envVarGroups:
-  - name: airbnb-shared-secrets
+services:
+  # 1. Backend Web Service
+  - type: web
+    name: banele-airbnb-backend
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: MONGO_URI
         sync: false
@@ -12,26 +19,14 @@ envVarGroups:
       - key: CLIENT_URL
         sync: false
 
-services:
-  # 1. Backend Web Service Process
-  - type: web
-    name: banele-airbnb-backend
-    env: node
-    plan: free
-    rootDir: server
-    buildCommand: npm install
-    startCommand: npm start
-    envVarGroups:
-      - name: airbnb-shared-secrets
-
-  # 2. Frontend Static Site Process
+  # 2. Frontend Static Site
   - type: web
     name: banele-airbnb-frontend
     env: static
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: dist
     routes:
       - type: rewrite
         source: /*
