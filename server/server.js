@@ -25,22 +25,29 @@ async function ensureDB() {
   }
 }
 
-// Allowed origins — localhost in dev, any Vercel/Heroku URL
+// Allowed origins — localhost in dev, any Vercel/Heroku/Render URL
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
+  'https://banele-airbnb-frontend.onrender.com',
   process.env.CLIENT_URL,
 ].filter(Boolean)
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (curl, Postman, same-origin on Heroku)
+      // Allow requests with no origin (curl, Postman, same-origin)
       if (!origin) return callback(null, true)
+      
+      // Clean trailing slashes for resilient matches
+      const cleanOrigin = origin.replace(/\/$/, "")
+      const cleanedAllowed = allowedOrigins.map(url => url.replace(/\/$/, ""))
+
       if (
-        allowedOrigins.includes(origin) ||
+        cleanedAllowed.includes(cleanOrigin) ||
         /\.vercel\.app$/.test(origin) ||
-        /\.herokuapp\.com$/.test(origin)
+        /\.herokuapp\.com$/.test(origin) ||
+        /\.onrender\.com$/.test(origin)
       ) {
         return callback(null, true)
       }
@@ -85,7 +92,7 @@ app.use('/api/bookings', reservationRoutes)
 // Health check
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
 
-// Serve built React frontend in production (Heroku)
+// Serve built React frontend in production
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const clientDist = join(__dirname, '../client/dist')
@@ -101,14 +108,11 @@ if (fs.existsSync(clientDist)) {
 app.use(notFound)
 app.use(errorHandler)
 
-// ── Local dev: start server normally ──
-// On Vercel the file is imported as a serverless function — no listen() needed
-if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
-  const PORT = process.env.PORT || 5000
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
-  })
-}
+// ── Render execution start block ──
+const PORT = process.env.PORT || 5000
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
 
 // Export for Vercel serverless
 export default app
